@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pautas",
+  "info": {
+    "singularName": "pauta",
+    "pluralName": "pautas",
+    "displayName": "Pauta"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "alt": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "probability": {
+      "type": "integer"
+    },
+    "showCount": {
+      "type": "integer",
+      "default": 0
+    },
+    "rectangular": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "cuadrada": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}
