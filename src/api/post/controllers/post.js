@@ -20,11 +20,13 @@ module.exports = createCoreController(
         const slug = sanitizedQueryParams.slug ? sanitizedQueryParams.slug : '';
         const query = sanitizedQueryParams.search ? sanitizedQueryParams.search : '';
 
+
         if (!(sugeridas.length === 0)) {
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'asc' }],
             filters: {
+              publicationState: 'live',
               destacada: true,
 
             },
@@ -37,6 +39,7 @@ module.exports = createCoreController(
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'desc' }],
             filters: {
+              publicationState: 'live',
               destacada: true,
 
             },
@@ -48,6 +51,7 @@ module.exports = createCoreController(
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
             filters: {
+              publicationState: 'live',
               slug: {
                 $eq: slug,
               },
@@ -61,6 +65,7 @@ module.exports = createCoreController(
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['categories', 'avatar', 'cover'],
             filters: {
+              publicationState: 'live',
               $or: [
                 {
                   title: {
@@ -90,7 +95,12 @@ module.exports = createCoreController(
           ctx.send({ data: posts });
           return;
         }
-        const posts = await strapi.entityService.findMany('api::post.post', { populate: ['cover', 'avatar', 'categories'] });
+        const posts = await strapi.entityService.findMany('api::post.post', {
+          populate: ['cover', 'avatar', 'categories'],
+          filters: {
+            publicationState: 'live'
+          }
+        });
         ctx.send({ data: posts });
       } catch (error) {
         console.error(error);
