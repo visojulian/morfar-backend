@@ -17,10 +17,27 @@ module.exports = createCoreController(
         const sanitizedQueryParams = await this.sanitizeQuery(ctx);
         const sugeridas = sanitizedQueryParams.sugeridas ? sanitizedQueryParams.sugeridas : '';
         const destacadas = sanitizedQueryParams.destacadas ? sanitizedQueryParams.destacadas : '';
+        const populares = sanitizedQueryParams.populares ? sanitizedQueryParams.populares : '';
         const slug = sanitizedQueryParams.slug ? sanitizedQueryParams.slug : '';
         const query = sanitizedQueryParams.search ? sanitizedQueryParams.search : '';
 
 
+        if (!(populares.length === 0)) {
+          const posts = await strapi.entityService.findMany('api::post.post', {
+            populate: ['cover', 'avatar', 'categories'],
+            sort: [{ counter: 'desc' }],
+            filters: {
+              publishedAt: {
+                $ne: null,
+              },
+              counter: {
+                $ne: null,
+              },
+            },
+          });
+          ctx.send({ data: posts });
+          return;
+        }
         if (!(sugeridas.length === 0)) {
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
