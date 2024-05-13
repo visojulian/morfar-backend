@@ -77,6 +77,10 @@
       "allowedTypes": [
         "videos"
       ]
+    },
+    "counter": {
+      "type": "integer",
+      "default": 0
     }
   }
 }

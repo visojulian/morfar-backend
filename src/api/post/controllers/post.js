@@ -17,16 +17,35 @@ module.exports = createCoreController(
         const sanitizedQueryParams = await this.sanitizeQuery(ctx);
         const sugeridas = sanitizedQueryParams.sugeridas ? sanitizedQueryParams.sugeridas : '';
         const destacadas = sanitizedQueryParams.destacadas ? sanitizedQueryParams.destacadas : '';
+        const populares = sanitizedQueryParams.populares ? sanitizedQueryParams.populares : '';
         const slug = sanitizedQueryParams.slug ? sanitizedQueryParams.slug : '';
         const query = sanitizedQueryParams.search ? sanitizedQueryParams.search : '';
 
 
+        if (!(populares.length === 0)) {
+          const posts = await strapi.entityService.findMany('api::post.post', {
+            populate: ['cover', 'avatar', 'categories'],
+            sort: [{ counter: 'desc' }],
+            filters: {
+              publishedAt: {
+                $ne: null,
+              },
+              counter: {
+                $ne: null,
+              },
+            },
+          });
+          ctx.send({ data: posts });
+          return;
+        }
         if (!(sugeridas.length === 0)) {
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'asc' }],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               destacada: true,
 
             },
@@ -39,7 +58,9 @@ module.exports = createCoreController(
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'desc' }],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               destacada: true,
 
             },
@@ -51,7 +72,9 @@ module.exports = createCoreController(
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               slug: {
                 $eq: slug,
               },
@@ -65,7 +88,9 @@ module.exports = createCoreController(
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['categories', 'avatar', 'cover'],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               $or: [
                 {
                   title: {
@@ -98,10 +123,35 @@ module.exports = createCoreController(
         const posts = await strapi.entityService.findMany('api::post.post', {
           populate: ['cover', 'avatar', 'categories'],
           filters: {
-            publicationState: 'live'
+            publishedAt: {
+              $ne: null,
+            },
           }
         });
         ctx.send({ data: posts });
+      } catch (error) {
+        console.error(error);
+        ctx.badRequest('An error occurred while processing your request.');
+      }
+    },
+    async incrementCounter(ctx) {
+      const { id } = ctx.params;
+      try {
+        // Fetch the post
+        const post = await strapi.entityService.findOne('api::post.post', id);
+
+        if (!post) {
+          return ctx.notFound('Post not found');
+        }
+
+        // Increment the counter
+        const updatedPost = await strapi.entityService.update('api::post.post', id, {
+          data: {
+            counter: post.counter ? Number(post.counter) + 1 : 1,
+          }
+        });
+
+        ctx.send({ data: updatedPost });
       } catch (error) {
         console.error(error);
         ctx.badRequest('An error occurred while processing your request.');
