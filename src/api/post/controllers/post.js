@@ -10,7 +10,6 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController(
   'api::post.post',
-  // @ts-ignore
   ({ strapi }) => ({
     async find(ctx) {
       try {
