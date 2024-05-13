@@ -26,7 +26,9 @@ module.exports = createCoreController(
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'asc' }],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               destacada: true,
 
             },
@@ -39,7 +41,9 @@ module.exports = createCoreController(
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'desc' }],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               destacada: true,
 
             },
@@ -51,7 +55,9 @@ module.exports = createCoreController(
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               slug: {
                 $eq: slug,
               },
@@ -65,7 +71,9 @@ module.exports = createCoreController(
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['categories', 'avatar', 'cover'],
             filters: {
-              publicationState: 'live',
+              publishedAt: {
+                $ne: null,
+              },
               $or: [
                 {
                   title: {
@@ -98,7 +106,9 @@ module.exports = createCoreController(
         const posts = await strapi.entityService.findMany('api::post.post', {
           populate: ['cover', 'avatar', 'categories'],
           filters: {
-            publicationState: 'live'
+            publishedAt: {
+              $ne: null,
+            },
           }
         });
         ctx.send({ data: posts });
