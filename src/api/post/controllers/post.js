@@ -10,6 +10,7 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController(
   'api::post.post',
+  // @ts-ignore
   ({ strapi }) => ({
     async find(ctx) {
       try {
@@ -112,6 +113,29 @@ module.exports = createCoreController(
           }
         });
         ctx.send({ data: posts });
+      } catch (error) {
+        console.error(error);
+        ctx.badRequest('An error occurred while processing your request.');
+      }
+    },
+    async incrementCounter(ctx) {
+      const { id } = ctx.params;
+      try {
+        // Fetch the post
+        const post = await strapi.entityService.findOne('api::post.post', id);
+
+        if (!post) {
+          return ctx.notFound('Post not found');
+        }
+
+        // Increment the counter
+        const updatedPost = await strapi.entityService.update('api::post.post', id, {
+          data: {
+            counter: post.counter ? Number(post.counter) + 1 : 1,
+          }
+        });
+
+        ctx.send({ data: updatedPost });
       } catch (error) {
         console.error(error);
         ctx.badRequest('An error occurred while processing your request.');

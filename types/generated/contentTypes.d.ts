@@ -810,6 +810,7 @@ export interface ApiPostPost extends Schema.CollectionType {
     avatar: Attribute.Media & Attribute.Required;
     author: Attribute.String & Attribute.DefaultTo<'Nicol\u00E1s Maggi'>;
     video: Attribute.Media;
+    counter: Attribute.Integer & Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
