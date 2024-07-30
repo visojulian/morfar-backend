@@ -58,12 +58,21 @@ module.exports = createCoreController(
         // Call the default parent controller action
         const result = await super.find(ctx);
         const cantidad = Number(sanitizedQueryParams.cantidad);
+        const cuadrada = Number(sanitizedQueryParams.cuadrada);
+        const rectangular = Number(sanitizedQueryParams.rectangular);
 
         // your custom logic for modifying the output
         if (cantidad) {
-          // Retrieve ads to be shown
-          const pautas = result.data;
-
+          const pautas = [];
+          if (cuadrada) {
+            const filtered = result.data.filter(p => p.attributes.cuadrada?.data?.id);
+            pautas.push(...filtered);
+          } else if (rectangular) {
+            const filtered = result.data.filter(p => p.attributes.rectangular?.data?.id);
+            pautas.push(...filtered);
+          } else {
+            pautas.push(...result.data);
+          }
           // Get randomly selected ads
           const adsToShow = getRandomAds(pautas, cantidad);
 
