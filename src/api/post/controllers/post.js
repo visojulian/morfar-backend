@@ -39,6 +39,7 @@ module.exports = createCoreController(
           return;
         }
         if (!(sugeridas.length === 0)) {
+          const cantidad = Number(sanitizedQueryParams.cantidad);
           const posts = await strapi.entityService.findMany('api::post.post', {
             populate: ['cover', 'avatar', 'categories'],
             sort: [{ publishedAt: 'asc' }],
@@ -50,6 +51,12 @@ module.exports = createCoreController(
 
             },
           });
+          if (Array.isArray(posts)) {
+            var shuffled = posts.sort(function(){ return 0.5 - Math.random() });
+            var nRandomPosts = shuffled.slice(0,cantidad);
+            ctx.send({ data: nRandomPosts });
+            return;
+          }
           ctx.send({ data: posts });
           return;
         }
